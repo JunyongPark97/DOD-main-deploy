@@ -1,0 +1,91 @@
+
+.signup-text{
+    width: 100%;
+    text-align: left;
+    margin-top: 0px;
+    font-family: noto-bold;
+    font-size: 20px;
+    margin-bottom: 36px;
+}
+.signup-small-text{
+    width: auto;
+    text-align: start;
+    font-family: noto-regular;
+    font-size: 16px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    display: inline;
+}
+.signup-sms-success{
+    display: inline;
+    font-size: 12px;
+    color: #518BF8;
+    font-family: noto-bold;
+    flex-grow: 1;
+    margin:0px;
+    text-align: end;
+}
+.signup-sms-success.hide{
+    display: none;
+}
+.signup-sms-fail{
+    display: inline;
+    font-size: 12px;
+    color: #FE351E;
+    font-family: noto-bold;
+    flex-grow: 1;
+    margin:0px;
+    text-align: end;
+}
+.signup-sms-fail.hide{
+    display: none;
+}
+.signup-confirm-fail{
+    display: inline;
+    font-size: 12px;
+    color: #FE351E;
+    font-family: noto-bold;
+    flex-grow: 1;
+    margin:0px;
+    text-align: end;
+}
+.signup-confirm-fail.hide{
+    display: none;
+}
+
+.signup-textbox{
+    width: 100%;
+    margin-bottom: 4px;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+.signup-id-input{
+    width: 100%;
+    box-sizing : border-box;
+    margin-bottom: 16px;
+    margin-top: 0px;
+    padding:8px 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border:1px solid #D1D1D1;
+}
+.signup-pw-input{
+    width: 100%;
+    box-sizing : border-box;
+    margin-bottom: 16px;
+    margin-top: 0px;
+    padding:8px 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border:1px solid #D1D1D1;
+}
+.contour-16margin-both{
+    width: 100%;
+    background-color: #D1D1D1;
+    height: 1px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}

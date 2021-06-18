@@ -1,0 +1,45 @@
+.dod-navbar{
+    background: linear-gradient(90deg, #fff 0%, #fff 100%);
+    height: 72px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+.dod-navbar-container{
+    width: 680px;
+    display: flex;
+    /* justify-content: start; */
+}
+
+.dod-navbar-logo {
+    color: #fff;
+    justify-self: flex-start;
+    margin-left: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+  }
+  .dod-title{
+      flex: none;
+      font-family: noto-bold;
+      font-size: 16px;
+      color: #5B5B5B;
+  }
+
+  .dod-menu-icon{
+      flex: none;
+      margin-left: auto;
+      margin-right: 20px;
+  }
+  .dod-menu-icon.hide{
+      display: none;
+  }
+  .dod-login-icon.hide{
+      display: none;
+  }
