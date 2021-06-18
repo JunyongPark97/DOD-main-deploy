@@ -1,0 +1,30 @@
+# docker-compose.yml
+
+version: '3'
+#networks:
+#  monde-siiot-net:  # Container들의 Private Network을 설정한다.
+#    driver: bridge
+volumes:  # Container 들에서 사용되는 Volume을 정의한다.
+    monde-static-volume: {}
+services:
+    nginx: 
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile
+        ports:
+            - 80:80
+        volumes:
+            - monde-static-volume:/mondeique_dod/DOD-main-server/dod/django_static
+            - ./docker/nginx/dev:/etc/nginx/conf.d
+        depends_on: 
+            - monde-dod
+    monde-dod:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/backend/Dockerfile
+        volumes:
+            - monde-static-volume:/mondeique_dod/DOD-main-server/dod/django_static
+        expose:
+            - 8000
