@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import { Button } from './Button';
 import './SignIn.css'
+import baseUrl from '../network/network';
 
 function SignIn(props) {
     const {isOpen, closeModal, loginFunction} = props;
@@ -24,7 +25,7 @@ function SignIn(props) {
     function loginClickHandler() {
         console.log(readyToLogin(id,pw));
         if(readyToLogin(id, pw)){
-            fetch('http://3.36.156.224:8000/accounts/v1/login/',{
+            fetch(`${baseUrl}/accounts/v1/login/`,{
                 method:"POST",
                 headers:{
                     'accept' : 'application/json',
@@ -53,6 +54,9 @@ function SignIn(props) {
             setAlertBoolean(true);
         }
     }
+    function onClickFindPW(){
+        window.location.assign('http://pf.kakao.com/_nfxcTs');
+    }
     return (
         <>
         {
@@ -68,7 +72,7 @@ function SignIn(props) {
                     </input>
                     <div className='signin-textbox'>
                         <p className='signin-small-text'>비밀번호</p>
-                        <p className='signin-findpw'>비밀번호 찾기</p>
+                        <p className='signin-findpw' onClick={onClickFindPW}>비밀번호 찾기</p>
                     </div>
                     <input name='pw' className = 'signin-pw-input' onChange={onChangePWInput} type='password' placeholder='비밀번호를 입력해주세요'>
 

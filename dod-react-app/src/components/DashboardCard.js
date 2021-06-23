@@ -2,13 +2,14 @@ import React from 'react'
 import './DashboardCard.css'
 import StatusTag from './StatusTag';
 import DashboardCardBtn from './DashboardCardBtn'
+import baseUrl from '../network/network';
 
 export default function DashboardCard(props) {
     const {item, index, deleteProject} = props;
     const products = item.products;
     function deleteItem(){
-        fetch(`http://3.36.156.224:8000/api/v1/project/${item.id}/`,{
-            method:'POST',
+        fetch(`${baseUrl}/api/v1/project/${item.id}/`,{
+            method:'DELETE',
             headers:{
                 'accept' : 'application/json',
                 'content-type' : 'application/json;charset=UTF-8',
@@ -16,6 +17,7 @@ export default function DashboardCard(props) {
             }
         }).then(res => {
             if(res.ok){
+                console.log(res);
                 deleteProject(index);
             }else{
                 console.log(res);
@@ -47,7 +49,7 @@ export default function DashboardCard(props) {
                                 products.map((productItem) => 
                                 <div key={productItem.id} className='dashboard-card-content-products'>
                                     <img className='dashboard-card-content-giftimg' src={productItem.item_thumbnail}/>
-                                    <p className={(item.project_status > 100)?'dashboard-card-content-giftnum disabled':'dashboard-card-content-giftnum'}>{productItem.winner_count}/{productItem.winner_count+productItem.remain_winner_count}</p>
+                                    <p className={(item.project_status > 100)?'dashboard-card-content-giftnum disabled':'dashboard-card-content-giftnum'}>{productItem.remain_winner_count}/{productItem.winner_count}</p>
                                 </div>
                                 )
                             }
@@ -55,7 +57,7 @@ export default function DashboardCard(props) {
                     </div>
                 </div>
             </div>
-            <DashboardCardBtn status={item.project_status} projectId={item} deleteProject={deleteItem}/>
+            <DashboardCardBtn status={item.project_status} depositor={item.depositor} totalPrice={item.total_price} projectId={item.id} deleteProject={deleteItem}/>
         </div>
     )
 }

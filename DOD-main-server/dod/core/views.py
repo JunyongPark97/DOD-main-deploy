@@ -104,8 +104,8 @@ class SMSViewSet(viewsets.GenericViewSet):
         설문자 인증번호 인증 api입니다. 인증시 서버에서 5-10초후 reward MMS를 발송합니다.
         api: api/v1/sms/respondent_confirm
         method: POST
-        전화번호, 인증번호 와 url에서 파싱한 project_key를 담아서 보내주어야 합니다.
-        data: {'phone', 'confirm_key', 'project_key'}
+        전화번호, 인증번호 와 url에서 파싱한 project_key와 validator를 담아서 보내주어야 합니다.
+        data: {'phone', 'confirm_key', 'project_key', 'validator}
         """
         data = request.data
         serializer = self.get_serializer(data=data)
@@ -115,13 +115,13 @@ class SMSViewSet(viewsets.GenericViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
         self.data = serializer.validated_data
         # 중복 응모 불
-        if self._check_respondent_overlap():
+        if self._check_respondent_overlap(): # TODO : check
             return Response(status=status.HTTP_403_FORBIDDEN)
         self._create_respondent()
 
         # 여기까지가 유저 당첨확인 및 생성
 
-        if self.is_win:
+        if self.is_win: #TODO : signal 로 3초 뒤에 보내기..!
             self._set_random_reward()
 
             mms_manager = MMSV1Manager()

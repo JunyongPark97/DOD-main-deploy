@@ -2,6 +2,7 @@ import { when } from 'jquery';
 import React,{useState, useRef} from 'react'
 import { Button } from './Button'
 import './SignUp.css'
+import baseUrl from '../network/network';
 
 function SignUp(props) {
     const {isOpen, openPWAssign} = props;
@@ -30,8 +31,9 @@ function SignUp(props) {
     }
 
     function onClickGetConfirmKey() {
+        setConfirmFailed(false);
         if((phone != '')&&phone.length == 11){
-            fetch('http://3.36.156.224:8000/api/v1/sms/send/',{
+            fetch(`${baseUrl}/api/v1/sms/send/`,{
                 method:"POST",
                 headers:{
                     'accept' : 'application/json',
@@ -83,7 +85,7 @@ function SignUp(props) {
             if(confirmKey == ''){
                 confirmFailAlert('인증번호를 입력해주세요.')
             }else{
-                fetch('http://3.36.156.224:8000/api/v1/sms/confirm/',{
+                fetch(`${baseUrl}/api/v1/sms/confirm/`,{
                     method:"POST",
                     headers:{
                         'accept' : 'application/json',
