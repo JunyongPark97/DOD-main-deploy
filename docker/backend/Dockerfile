@@ -80,5 +80,5 @@ RUN chown -R www-data:www-data /mondeique_dod
 
 EXPOSE 80 22
 
-ENTRYPOINT ["./wsgi_entrypoint.sh"]
+ENTRYPOINT ["./wsgi-entrypoint.sh"]
 CMD ["supervisord", "-n"]
