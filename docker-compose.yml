@@ -11,19 +11,19 @@ services:
         restart: unless-stopped
         build:
             context: .
-            dockerfile: ./docker/nginx/Dockerfile
+            dockerfile: ./Dockerfile-nginx
         ports:
             - 80:80
         volumes:
             - monde-static-volume:/mondeique_dod/DOD-main-server/dod/django_static
-            - ./docker/nginx/dev:/etc/nginx/conf.d
+            - ./nginx-dev.conf:/etc/nginx/conf.d/default.conf
         depends_on: 
             - monde-dod
     monde-dod:
         restart: unless-stopped
         build:
             context: .
-            dockerfile: ./docker/backend/Dockerfile
+            dockerfile: ./Dockerfile-backend
         volumes:
             - monde-static-volume:/mondeique_dod/DOD-main-server/dod/django_static
         expose:

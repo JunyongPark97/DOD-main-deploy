@@ -72,7 +72,12 @@ RUN apt-get install -y python3-dev default-libmysqlclient-dev gcc
 RUN pip install mysqlclient==1.4.4
 
 # Main Backend Docker + code copy
-ADD ./docker /mondeique_dod/docker
+ADD ./Dockerfile-backend /mondeique_dod/
+ADD ./Dockerfile-nginx /mondeique_dod/
+ADD ./nginx-dev.conf /mondeique_dod/
+ADD ./nginx-prod.conf /mondeique_dod/
+ADD ./supervisord.conf /mondeique_dod/
+ADD ./wsgi-entrypoint.sh /mondeique_dod/
 ADD ./DOD-main-server /mondeique_dod/backend
 
 # sort out permissions

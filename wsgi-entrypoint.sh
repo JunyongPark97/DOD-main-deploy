@@ -13,7 +13,7 @@ done
 
 /mondeique_dod/backend/dod/manage.py collectstatic --noinput
 
-gunicorn server.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
+gunicorn dod.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
 
 #####################################################################################
 # Options to DEBUG Django server
