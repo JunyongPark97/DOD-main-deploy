@@ -3,17 +3,22 @@ import DodNavbar from './DodNavbar';
 import {BrowserRouter as Router, Switch, Route, useHistory} from 'react-router-dom'
 import './DashboardPage.css'
 import DashboardCard from './DashboardCard';
+import MainpageDescription from './MainpageDescription';
+import Footer from './Footer'
+
+import baseUrl from '../network/network';
 
 export default function DashboardPage() {
     const history = useHistory();
     const [isLoggedIn, setIsLoggedIn] = useState(true);
     const [itemList, setItemList] = useState([]);
+    const [showInfo, setShowInfo] = useState(false);
 
     useEffect(()=>{
         if(sessionStorage.getItem('DODtoken') === null){
             history.push('/');
         }
-        fetch('http://3.36.156.224:8000/api/v1/dashboard/',{
+        fetch(`${baseUrl}/api/v1/dashboard/`,{
             method:'GET',
             headers:{
                 'accept' : 'application/json',
@@ -28,6 +33,9 @@ export default function DashboardPage() {
             }
         }).then(res => {
             setItemList(res);
+            if(res.length === 0){
+                setShowInfo(true);
+            }
             console.log(res);
         })
     }, [])
@@ -37,13 +45,17 @@ export default function DashboardPage() {
     function onClickCreateBtn(){
         history.push('/create');
     }
+    function removeItem(array, index){
+        const newArray = array.filter((x, idx, array) => idx !== index);
+        return newArray;
+    }
     function deleteProject(index){
-        let newArray = itemList;
-        newArray.splice(index,1);
+        let newArray = removeItem(itemList, index);
+        
         setItemList(newArray);
     }
     return (
-        <div>
+        <div className='dashboard-container'>
             <DodNavbar isLoggedIn={isLoggedIn} openModal={openMypage}/>
             <div className='contour'/>
             <p className='dashboard-text'>
@@ -66,6 +78,13 @@ export default function DashboardPage() {
             {
                 itemList.map((item, index) => <DashboardCard key = {index} item={item} index={index} deleteProject={deleteProject}/>)
             }
+            {
+                showInfo?<>
+                    <div className='contour-16margin-both'/>
+                    <MainpageDescription/>
+                </>:<></>
+            }
+            <Footer/>
         </div>
     )
 }

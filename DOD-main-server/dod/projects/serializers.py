@@ -25,6 +25,12 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
         fields = ['owner', 'start_at', 'dead_at']
 
     def create(self, validated_data):
+        start_at = validated_data['start_at']
+        fixed_start_at = start_at + datetime.timedelta(hours=9)
+        dead_at = validated_data['dead_at']
+        fixed_dead_at = dead_at + datetime.timedelta(days=1, hours=8, minutes=59, seconds=59)
+        validated_data['start_at'] = fixed_start_at
+        validated_data['dead_at'] = fixed_dead_at
         validated_data['project_hash_key'] = generate_hash_key()
         validated_data['name'] = generate_project_name()
         project = super(ProjectCreateSerializer, self).create(validated_data)
@@ -36,6 +42,16 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['start_at', 'dead_at']
+
+    def update(self, instance, validated_data):
+        start_at = validated_data['start_at']
+        fixed_start_at = start_at + datetime.timedelta(hours=9)
+        dead_at = validated_data['dead_at']
+        fixed_dead_at = dead_at + datetime.timedelta(days=1, hours=8, minutes=59, seconds=59)
+        validated_data['start_at'] = fixed_start_at
+        validated_data['dead_at'] = fixed_dead_at
+        project = super(ProjectUpdateSerializer, self).update(instance, validated_data)
+        return project
 
 
 class ProjectDepositInfoRetrieveSerializer(serializers.ModelSerializer):
@@ -123,7 +139,7 @@ class SimpleProjectInfoSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['id', 'project_status']
 
-    def get_project_status(self, obj):  # humanize
+    def get_project_status(self, obj):  # humanize #TODO: request validator check
         now = datetime.datetime.now()
         if obj.dead_at < now:
             return False  # 종료됨
@@ -143,7 +159,7 @@ class ProjectLinkSerializer(serializers.ModelSerializer):
         model = Project
         fields = ['url', 'image_url']
 
-    def get_url(self, obj):
+    def get_url(self, obj): # TODO : respondent validator view api
         hash_key = obj.project_hash_key
         # url = 'https://d-o-d.io/link/{}'.format(hash_key)
         url = 'http://172.30.1.17:3000/link/{}'.format(hash_key)

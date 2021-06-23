@@ -3,6 +3,8 @@ import { Button } from './Button';
 import './Payment.css'
 import CreateProjectModal from './CreateProjectModal'
 
+import baseUrl from '../network/network';
+
 function Payment(props) {
     const {projectId, name, setName, pageNum, price} = props;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,7 +13,7 @@ function Payment(props) {
     const [toss_url, setTossUrl] = useState('');
     
     useEffect(()=>{
-        fetch('http://3.36.156.224:8000/api/v1/deposit-info/',{
+        fetch(`${baseUrl}/api/v1/deposit-info/`,{
             headers:{
                 'accept' : 'application/json',
                 'content-type' : 'application/json;charset=UTF-8'}
@@ -21,6 +23,9 @@ function Payment(props) {
             setQRCode(res.qr_code);
             setTossUrl(res.url);
         })
+        if(name !== ''){
+            nameInput.current.value = name;
+        }
     }, [])
 
     const nameInput = useRef(null);
@@ -34,7 +39,7 @@ function Payment(props) {
         if(nameInput.current.value === ''){
             setAlertShow(true);
         }else{
-            fetch(`http://3.36.156.224:8000/api/v1/project/${projectId}/depositor/`,{
+            fetch(`${baseUrl}/api/v1/project/${projectId}/depositor/`,{
                 method:'PUT',
                 headers:{
                     'accept' : 'application/json',
@@ -78,8 +83,8 @@ function Payment(props) {
                         <p className={alertShow?'payment-name-alert':'payment-name-alert hide'}>입금자명을 입력해주세요!</p>
                     </div>
                     <div className='payment-name-container'>
-                        <input ref={nameInput} name='name' className = 'payment-name' placeholder='입금자명을 입력해주세요' onChange={onChangeName}>
-
+                        <input ref={nameInput} name='name' className = 'payment-name' placeholder='입금자명을 입력해주세요' onChange={onChangeName} >
+                            
                         </input>
                         <button className = 'payment-name-submit-btn' onClick={onClickNameSubmit}>
                             확인

@@ -31,7 +31,10 @@ function SignModal(props) {
         closeModalFunction();
         setSignInOpen(false);
         setSignUpOpen(false);
+        setPWAssignOpen(false);
         setCheckSignedUpOpen(true);
+        sessionStorage.removeItem('phone');
+        sessionStorage.removeItem('confirmKey');
     }
     function openPWAssign(){
         setCheckSignedUpOpen(false);
@@ -49,7 +52,7 @@ function SignModal(props) {
                         <CheckSignedUp isCheckSignedOpen={checkSignedUpOpen} handleClickSignIn={handleClickSignIn} handleClickSignUp={handleClickSignUp}/>
                         <SignIn isOpen={signInOpen} closeModal={closeModalFunction} loginFunction={justLogin?loginFunction:createProject}/>
                         <SignUp isOpen={signUpOpen} openPWAssign={openPWAssign}/>
-                        <PWAssign isOpen={pwAssignOpen} closeModal={closeModalFunction} loginFunction={justLogin?loginFunction:createProject}/>
+                        <PWAssign isOpen={pwAssignOpen} closeModal={closeModalFunction} loginFunction={loginFunction}/>
                     </div>
                 </div>
                 ) : (

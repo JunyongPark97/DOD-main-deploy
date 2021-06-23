@@ -18,14 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 
 from custom_manage.sites import superadmin_panel, staff_panel
-from projects.views import ProjectValidCheckAPIView
+from dod import settings
+from respondent.views import RefererValidatorAPIView, home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('superadmin/', superadmin_panel.urls),
     path('staff/', staff_panel.urls, name='staff'),
 
-    url(r'^check_link/(?P<slug>[-\w]+)/$', ProjectValidCheckAPIView.as_view()),
+    # url(r'^check_link/(?P<slug>[-\w]+)/$', ProjectValidCheckAPIView.as_view()),
+    url(r'^link/(?P<slug>[-\w]+)/$', RefererValidatorAPIView.as_view()),
 
     path('accounts/v1/', include('accounts.urls')),
     path('api/v1/', include('projects.urls')),
@@ -33,7 +35,18 @@ urlpatterns = [
     path('api/v1/', include('notice.urls')),
     path('api/v1/', include('payment.urls')),
     path('api/v1/', include('core.urls')),
+    path('api/v1/', include('respondent.urls')),
 
-    # ckeditor
+    # ckeditors
     path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+        # For django versions before 2.0:
+        # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+    ]

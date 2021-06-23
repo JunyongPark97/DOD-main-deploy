@@ -2,11 +2,12 @@ import React,{useState, useEffect} from 'react'
 import CreateProject from './CreateProject';
 import Navbar from './Navbar'
 import Payment from './Payment'
+import baseUrl from '../network/network';
 
 function CreatePage() {
     const [pageNum, setPageNum] = useState(0);
     const [price, setPrice] = useState(0);
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(initStartDate());
     const [endDate, setEndDate] = useState(initEndDate());
     const [productList, setProductList] = useState([]);
     const [totalProductNum, setTotalProductNum] = useState(0);
@@ -20,7 +21,7 @@ function CreatePage() {
         if(sessionStorage.getItem('DODtoken') == null){
             window.location.assign('/');
         }
-        fetch('http://3.36.156.224:8000/api/v1/products/',{
+        fetch(`${baseUrl}/api/v1/products/`,{
             headers:{
                 'accept' : 'application/json',
                 'content-type' : 'application/json;charset=UTF-8'}
@@ -39,7 +40,13 @@ function CreatePage() {
     function initEndDate(){
         var endDate = new Date();
         endDate.setDate(endDate.getDate() + 7);
-        return endDate
+        endDate.setHours(0, 0, 0, 0);
+        return endDate;
+    }
+    function initStartDate(){
+        var startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+        return startDate;
     }
     function onClickBack(){
         if(pageNum === 1){
@@ -61,7 +68,7 @@ function CreatePage() {
         })
         console.log(itemList);
         if(projectId === undefined){
-            fetch('http://3.36.156.224:8000/api/v1/project/',{
+            fetch(`${baseUrl}/api/v1/project/`,{
                 method:'POST',
                 headers:{
                     'accept' : 'application/json',
@@ -87,7 +94,7 @@ function CreatePage() {
                 setPageNum(1);
             }).catch(error=>console.log(error))
         }else{
-            fetch(`http://3.36.156.224:8000/api/v1/project/${projectId}/`,{
+            fetch(`${baseUrl}/api/v1/project/${projectId}/`,{
                 method:'PUT',
                 headers:{
                 'accept' : 'application/json',
