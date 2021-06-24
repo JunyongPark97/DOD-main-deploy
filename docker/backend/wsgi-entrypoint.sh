@@ -1,17 +1,23 @@
 #!/bin/sh
 
-until cd /mondeique_dod/backend/dod/
+until cd /app/backend/dod
 do
     echo "Waiting for server volume..."
 done
 
-until /mondeique_dod/backend/dod/manage.py migrate
+until ./manage.py makemigrations
 do
     echo "Waiting for db to be ready..."
     sleep 2
 done
 
-/mondeique_dod/backend/dod/manage.py collectstatic --noinput
+until ./manage.py migrate --fake
+do
+    echo "Waiting for db to be ready..."
+    sleep 2
+done
+
+./manage.py collectstatic --noinput
 
 gunicorn dod.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
 
