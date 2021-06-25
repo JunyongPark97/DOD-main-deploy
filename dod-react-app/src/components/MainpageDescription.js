@@ -27,4 +27,3 @@ function MainpageDescription() {
 }
 
 export default MainpageDescription
-

@@ -17,6 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 
+from core.views import SendMMSAPIView
 from custom_manage.sites import superadmin_panel, staff_panel
 from dod import settings
 from respondent.views import RefererValidatorAPIView, home
@@ -26,8 +27,7 @@ urlpatterns = [
     path('superadmin/', superadmin_panel.urls),
     path('staff/', staff_panel.urls, name='staff'),
 
-    # url(r'^check_link/(?P<slug>[-\w]+)/$', ProjectValidCheckAPIView.as_view()),
-    url(r'^link/(?P<slug>[-\w]+)/$', RefererValidatorAPIView.as_view()),
+    path('link/<slug:slug>/', RefererValidatorAPIView.as_view()),
 
     path('accounts/v1/', include('accounts.urls')),
     path('api/v1/', include('projects.urls')),
@@ -36,6 +36,10 @@ urlpatterns = [
     path('api/v1/', include('payment.urls')),
     path('api/v1/', include('core.urls')),
     path('api/v1/', include('respondent.urls')),
+    path('api/manage/', include('custom_manage.urls')),
+
+
+    path('api/send-mms/', SendMMSAPIView.as_view()),
 
     # ckeditors
     path('ckeditor/', include('ckeditor_uploader.urls')),

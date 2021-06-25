@@ -7,7 +7,7 @@ export default function CreateProjectModal(props) {
         event.stopPropagation();
     }
     function onClickYes(){
-        fetch(`${baseUrl}/api/v1/deposit-success/${projectId}`,{
+        fetch(`${baseUrl}/api/v1/deposit-success/${projectId}/`,{
             method:'GET',
             headers:{
                 'accept' : 'application/json',
@@ -19,7 +19,8 @@ export default function CreateProjectModal(props) {
                 sessionStorage.setItem('getLinkProjectId', projectId);
                 window.location.assign('/projectlink');
             }else{
-                console.log(res);
+                window.alert('다시 로그인해주세요.')
+                window.location.assign('/');
             }
         })
     }
