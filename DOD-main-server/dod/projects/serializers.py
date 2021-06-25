@@ -26,15 +26,21 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         start_at = validated_data['start_at']
-        fixed_start_at = start_at + datetime.timedelta(hours=9)
+        fixed_start_at = start_at + datetime.timedelta(hours=9, minutes=1)
         dead_at = validated_data['dead_at']
         fixed_dead_at = dead_at + datetime.timedelta(days=1, hours=8, minutes=59, seconds=59)
         validated_data['start_at'] = fixed_start_at
         validated_data['dead_at'] = fixed_dead_at
         validated_data['project_hash_key'] = generate_hash_key()
-        validated_data['name'] = generate_project_name()
+        validated_data['name'] = self.set_project_name()
         project = super(ProjectCreateSerializer, self).create(validated_data)
         return project
+
+    def set_project_name(self):
+        user = self.context['user']
+        project_counts = user.projects.count() + 1
+        name = '추첨_{}'.format(project_counts)
+        return name
 
 
 class ProjectUpdateSerializer(serializers.ModelSerializer):
@@ -153,23 +159,31 @@ class SimpleProjectInfoSerializer(serializers.ModelSerializer):
 
 class ProjectLinkSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField()
-    image_url = serializers.SerializerMethodField()
+    pc_url = serializers.SerializerMethodField()
+    mobile_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
-        fields = ['url', 'image_url']
+        fields = ['url', 'pc_url', 'mobile_url']
 
     def get_url(self, obj): # TODO : respondent validator view api
         hash_key = obj.project_hash_key
-        # url = 'https://d-o-d.io/link/{}'.format(hash_key)
-        url = 'http://172.30.1.17:3000/link/{}'.format(hash_key)
+        url = 'https://d-o-d.io/link/{}/'.format(hash_key)
+        # url = 'https://docs.gift/link/{}/'.format(hash_key)
         return url
 
-    def get_image_url(self, obj):
-        link_notice = LinkCopyNotice.objects.filter(is_active=True).last()
+    def get_pc_url(self, obj):
+        link_notice = LinkCopyNotice.objects.filter(is_active=True, kinds=1).last()
         if link_notice.image:
             return link_notice.image.url
         return None
+
+    def get_mobile_url(self, obj):
+        link_notice = LinkCopyNotice.objects.filter(is_active=True, kinds=2).last()
+        if link_notice.image:
+            return link_notice.image.url
+        return None
+
 
 
 class PastProjectSerializer(serializers.ModelSerializer):

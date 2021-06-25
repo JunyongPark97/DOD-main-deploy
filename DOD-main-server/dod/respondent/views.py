@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 
 # Create your views here.
+from core.tools import get_client_ip
 from projects.models import Project
 from respondent.models import DeviceMetaInfo
 from respondent.serializers import ClientRefererProjectValidateSerializer
@@ -22,7 +23,6 @@ class RefererValidatorAPIView(APIView):
 
     def __init__(self):
         super(RefererValidatorAPIView, self).__init__()
-        self.referer = ""
         self.project = None
 
     def get(self, request, *args, **kwargs):
@@ -41,11 +41,12 @@ class RefererValidatorAPIView(APIView):
         redirect : client_ip/<confirm_page>/?val=~~&?p=~~/
         """
 
-        # base_url = 'https://d-o-d.io/'
-        base_url = 'http://172.30.1.37:3000/'
-        # base_url = 'http://3.36.156.224:8000/'
+        base_url = 'https://d-o-d.io/'
+        # base_url = 'http://172.30.1.26:3000/'
+        # server_url = 'https://docs.gift/'
         print(base_url)
         self.referer = request.META.get('HTTP_REFERER', "")
+        referer = request.META.get('HTTP_REFERER', "")
 
         if not self._check_referer():
             # client forbidden page
@@ -109,6 +110,7 @@ class ClientRefererProjectValidateCheckViewSet(viewsets.GenericViewSet):
         return : 100: pass, 400: project is not valid, 999: validator is not valid
         """
         data = request.data
+        print(data)
         serializer = self.get_serializer(data=data)
         if serializer.is_valid(raise_exception=True):
             data = serializer.validated_data
@@ -140,20 +142,13 @@ class ClientRefererProjectValidateCheckViewSet(viewsets.GenericViewSet):
             return True  # 진행중
 
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
-
-
-def home(request):
+def home(request, **kwargs):
     ip = get_client_ip(request)
     print(ip)
     user_agent = request.META.get('HTTP_USER_AGENT', "")
     print(user_agent)
     referer = request.META.get('HTTP_REFERER', "")
-    context = {'ip': ip, 'agent': user_agent, 'referer': referer}
+    d = request.META
+    context = {'ip': ip, 'agent': user_agent, 'referer': referer, 'data':d}
+
     return render(request, 'test.html', context)

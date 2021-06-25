@@ -2,7 +2,6 @@ from django.contrib import admin
 from custom_manage.sites import staff_panel
 
 # staff
-from projects.models import Project
 from respondent.models import RespondentPhoneConfirm, Respondent, DeviceMetaInfo
 
 
@@ -15,13 +14,18 @@ class RespondentPhoneConfirmStaffadmin(admin.ModelAdmin):
                     ]
 
 
-
 class RespondentStaffadmin(admin.ModelAdmin):
     list_display = ['id',
                     'project',
+                    'project_key',
                     'phone_confirm',
                     'is_win',
                     ]
+
+    def project_key(self, obj):
+        if obj.project:
+            return obj.project.project_hash_key
+        return ''
 
 
 class DeviceMetaInfoStaffAdmin(admin.ModelAdmin):

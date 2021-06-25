@@ -26,7 +26,7 @@ function PWAssign(props) {
     }
 
     function signUp(){
-        if(pw1 === pw2){
+        if(pw1 === pw2 && pw1 !== ''){
             fetch(`${baseUrl}/accounts/v1/signup/`,{
                 method:"POST",
                 headers:{
@@ -40,6 +40,7 @@ function PWAssign(props) {
             }).then(res => res.json())
             .then(res => {
                 sessionStorage.setItem('DODtoken', res.token);
+                sessionStorage.setItem('userName', res.name);
                 loginFunction();
                 closeModal();
             })

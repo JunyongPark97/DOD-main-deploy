@@ -25,6 +25,11 @@
     display: flex;
     align-items: center;
   }
+  .dod-navbar-logo-icon{
+      
+    width:51px;
+    height: 24px;
+  }
   .dod-title{
       flex: none;
       font-family: noto-bold;
@@ -36,6 +41,10 @@
       flex: none;
       margin-left: auto;
       margin-right: 0px;
+  }
+  .fas{
+      width: 32px;
+      height: 32px;
   }
   .dod-menu-icon.hide{
       display: none;

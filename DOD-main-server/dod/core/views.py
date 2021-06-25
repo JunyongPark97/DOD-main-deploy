@@ -1,16 +1,24 @@
+import json
 import random
 
+import requests
 from django.db import transaction
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 import datetime
+import time
 # Create your views here.
-from accounts.models import PhoneConfirm
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from accounts.models import PhoneConfirm, User
 from accounts.serializers import SMSSignupPhoneCheckSerializer, SMSSignupPhoneConfirmSerializer
 from core.sms.utils import SMSV2Manager, MMSV1Manager
+from core.tools import get_client_ip
+from dod import settings
+from logs.models import MMSSendLog
 from projects.models import Project
 from products.models import Product, Reward
 from respondent.models import RespondentPhoneConfirm, Respondent
@@ -105,7 +113,7 @@ class SMSViewSet(viewsets.GenericViewSet):
         api: api/v1/sms/respondent_confirm
         method: POST
         전화번호, 인증번호 와 url에서 파싱한 project_key와 validator를 담아서 보내주어야 합니다.
-        data: {'phone', 'confirm_key', 'project_key', 'validator}
+        data: {'phone', 'confirm_key', 'project_key', 'validator'}
         """
         data = request.data
         serializer = self.get_serializer(data=data)
@@ -114,21 +122,29 @@ class SMSViewSet(viewsets.GenericViewSet):
         if not Project.objects.filter(project_hash_key=data.get('project_key')).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
         self.data = serializer.validated_data
-        # 중복 응모 불
-        if self._check_respondent_overlap(): # TODO : check
-            return Response(status=status.HTTP_403_FORBIDDEN)
+        self._set_project()
         self._create_respondent()
 
         # 여기까지가 유저 당첨확인 및 생성
-
-        if self.is_win: #TODO : signal 로 3초 뒤에 보내기..!
+        item_name = ''
+        if self.is_win:
             self._set_random_reward()
 
-            mms_manager = MMSV1Manager()
             phone = self.data.get('phone')
-            mms_manager.set_content(self.reward.product.item.name)
-            if not mms_manager.send_mms(phone=phone, image_url=self.reward.reward_img.url):
-                return Response({'error_code': '네이버 문자 발송이 실패하였습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                body = {'phone': phone,
+                        'brand': self.reward.product.item.brand.name,
+                        'item_name': self.reward.product.item.name,
+                        'item_url': self.reward.reward_img.url,
+                        'due_date': self.reward.due_date}
+                headers = {'Content-type': 'application/json',
+                           'Accept': 'application/json'
+                           }
+                url = "http://d-o-d.io/api/send-mms/"  # dod로 바꾸기
+                requests.post(url, headers=headers, data=json.dumps(body), timeout=0.0000000001)
+            except requests.exceptions.ReadTimeout:
+                pass
 
             lucky_time = self.valid_lucky_times.first()
             lucky_time.is_used = True
@@ -137,13 +153,15 @@ class SMSViewSet(viewsets.GenericViewSet):
             # TODO: 당첨자 안나온 상품 있으면 한번에 보내기
             self.reward.winner_id = self.respondent.id
             self.reward.save()
+            item_name = self.reward.product.item.short_name
 
         return Response({'id': self.project.id,
-                         'is_win': self.is_win}, status=status.HTTP_200_OK)
+                         'is_win': self.is_win,
+                         'item_name': item_name}, status=status.HTTP_200_OK)
 
-    def _set_random_reward(self):
+    def _set_random_reward(self): # TODO: 에러날경우 패스 혹은 문의하기로
         reward_queryset = Reward.objects.filter(winner_id__isnull=True) \
-            .select_related('product', 'product__item', 'product__project')
+            .select_related('product', 'product__item', 'product__project', 'product__item__brand')
         remain_rewards = reward_queryset.filter(product__project=self.project)
         remain_rewards_id = list(remain_rewards.values_list('id', flat=True))
         remain_rewards_price = list(remain_rewards.values_list('product__item__price', flat=True))
@@ -152,12 +170,14 @@ class SMSViewSet(viewsets.GenericViewSet):
         random_reward_id_by_weight = random.choices(remain_rewards_id, weights=reward_weight)[0]
         self.reward = reward_queryset.get(id=random_reward_id_by_weight)
 
-    def _check_respondent_overlap(self):
-        self.project = Project.objects.get(project_hash_key=self.data.get('project_key'))
+    def _set_project(self):
+        project_queryset = Project.objects.filter(project_hash_key=self.data.get('project_key'))\
+            .prefetch_related('respondents', 'respondents__phone_confirm')
+
+        self.project = project_queryset.get(project_hash_key=self.data.get('project_key'))
         self.phone_confirm = RespondentPhoneConfirm.objects.filter(phone=self.data.get('phone'),
                                                                    confirm_key=self.data.get('confirm_key'),
                                                                    is_confirmed=True).first()
-        return Respondent.objects.filter(project=self.project, phone_confirm=self.phone_confirm).exists()
 
     def _create_respondent(self):
         self.is_win = self._am_i_winner()
@@ -182,4 +202,32 @@ class SMSViewSet(viewsets.GenericViewSet):
         else:
             return True
 
+
+class SendMMSAPIView(APIView):
+    """
+    당첨자 3초 후 문자전송을 위해 만듬
+    20210622
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+
+        ip = get_client_ip(request)
+        if ip not in settings.ALLOWED_HOSTS:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        data = request.data
+        phone = data.get('phone')
+        brand = data.get('brand')
+        item_name = data.get('item_name')
+        item_url = data.get('item_url')
+        due_date = data.get('due_date')
+        time.sleep(3)  # wait 3 seconds
+        mms_manager = MMSV1Manager()
+        mms_manager.set_content(brand, item_name, due_date)
+        success, code = mms_manager.send_mms(phone=phone, image_url=item_url)
+        if not success:
+            MMSSendLog.objects.create(code=code, phone=phone, item_name=item_name, item_url=item_url, due_date=due_date)
+        MMSSendLog.objects.create(code=code, phone=phone, item_name=item_name, item_url=item_url, due_date=due_date)
+        return Response(status=status.HTTP_200_OK)
 

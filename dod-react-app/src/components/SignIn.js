@@ -55,7 +55,10 @@ function SignIn(props) {
         }
     }
     function onClickFindPW(){
-        window.location.assign('http://pf.kakao.com/_nfxcTs');
+        const a = document.createElement('a');
+        a.setAttribute('href', 'https://www.notion.so/944fb33d73f04d638b43620184e4b0db');
+        a.setAttribute('target', '_blank');
+        a.click();
     }
     return (
         <>

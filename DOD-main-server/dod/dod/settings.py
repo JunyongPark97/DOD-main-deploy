@@ -28,7 +28,7 @@ SECRET_KEY = SETTING_DEV_DIC['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.30.1.17', '0.0.0.0', '127.0.0.1', '172.30.1.18', '3.36.156.224', '3.37.147.189', 'docs.gift', 'd-o-d.io']
+ALLOWED_HOSTS = ['172.30.1.17', '127.0.0.1', '172.30.1.18', '3.36.156.224', 'docs.gift', '3.37.147.189', 'd-o-d.io']
 
 INTERNAL_IPS = ('172.30.1.18')
 
@@ -54,6 +54,7 @@ SECONDS_APPS = [
     'respondent',
     'custom_manage',
     'core',
+    'logs'
 ]
 
 THIRD_APPS = [
@@ -65,7 +66,8 @@ THIRD_APPS = [
     'pymysql',
     # 'wpadmin',
     'storages',
-    'debug_toolbar'
+    'debug_toolbar',
+    'crispy_forms'
 ]
 
 INSTALLED_APPS += SECONDS_APPS + THIRD_APPS
@@ -88,7 +90,7 @@ ROOT_URLCONF = 'dod.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -240,4 +242,8 @@ CORS_ALLOW_METHODS = [
     'POST',
     'PUT',
 ]
-APPEND_SLASH = True
+APPEND_SLASH = False
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+

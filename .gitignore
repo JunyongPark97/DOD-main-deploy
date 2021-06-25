@@ -16,6 +16,7 @@ settings/__init__.py
 savecategory.py
 savesampledata.py
 *.xlsx
+gift.jpg
 
 # Created by https://www.gitignore.io/api/macos,python,django
 # Edit at https://www.gitignore.io/?templates=macos,python,django

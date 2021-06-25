@@ -16,6 +16,8 @@ export default function ResultPage(props) {
     const [confirmFailed, setConfirmFailed] = useState(false);
     const [showResultModal, setShowResultModal] = useState(false);
     const [win, setWin] = useState(false);
+    const [showResult, setShowResult] = useState(false);
+    const [itemName, setItemName] = useState('');
 
     const confirmKeyAlertMessage = useRef(null);
     const smsAlertMessage = useRef(null);
@@ -43,7 +45,6 @@ export default function ResultPage(props) {
                 return res.json();
             }else{
                 history.push('/invalid');
-                throw new Error('Something went wrong');
             }
         }).then(res => {
             console.log(res);
@@ -148,7 +149,11 @@ export default function ResultPage(props) {
                         }
                     }else{
                         setWin(res.is_win);
+                        setItemName(res.item_name);
                         setShowResultModal(true);
+                        setTimeout(()=>{
+                            setShowResult(true);
+                        }, 3000 )
                     }
                 }).catch(function(res){
                     
@@ -203,7 +208,7 @@ export default function ResultPage(props) {
                     인증 후 당첨 확인하기
                 </button>
             </div>
-            <ResultModal isModalOpen={showResultModal} win={win}/>
+            <ResultModal isModalOpen={showResultModal} showResult = {showResult} win={win} item_name={itemName}/>
         </div>
     )
 }
