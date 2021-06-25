@@ -1,3 +1,3 @@
 // const baseUrl = 'https://docs.gift'
-const baseUrl = 'http://3.37.147.189'
+const baseUrl = 'https://d-o-d.io'
 export default baseUrl;

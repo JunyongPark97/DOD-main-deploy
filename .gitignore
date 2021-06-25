@@ -1,4 +1,5 @@
 venv/
+docker/nginx/certbot/
 
 .idea/
 prod.py
