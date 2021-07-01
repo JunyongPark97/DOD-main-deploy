@@ -1,10 +1,12 @@
 import React,{useState, useEffect} from 'react'
+import {useHistory} from 'react-router-dom'
 import CreateProject from './CreateProject';
 import Navbar from './Navbar'
 import Payment from './Payment'
 import baseUrl from '../network/network';
 
 function CreatePage() {
+    const history = useHistory();
     const [pageNum, setPageNum] = useState(0);
     const [price, setPrice] = useState(0);
     const [startDate, setStartDate] = useState(initStartDate());
@@ -15,7 +17,7 @@ function CreatePage() {
     const [projectId, setProjectId] = useState(undefined);
 
     useEffect(()=>{
-        if(totalProductNum === 0){
+        if(projectId === undefined){
             setPageNum(0);
         }
         if(sessionStorage.getItem('DODtoken') == null){
@@ -57,7 +59,6 @@ function CreatePage() {
     }
     function onClickPay(){
         var itemList = []
-        console.log(sessionStorage.getItem('DODtoken'));
         productList.map(function(item, index){
             if(item.num > 0){
                 itemList.push({
@@ -66,7 +67,6 @@ function CreatePage() {
                 })
             }
         })
-        console.log(itemList);
         if(projectId === undefined){
             fetch(`${baseUrl}/api/v1/project/`,{
                 method:'POST',
@@ -109,6 +109,8 @@ function CreatePage() {
             }).then(function(res){
                 if(res.ok){
                     return res.json()
+                }else if(res.status === 401){
+                    window.location.assign('/');
                 }else{
                     console.log(res);
                 }
