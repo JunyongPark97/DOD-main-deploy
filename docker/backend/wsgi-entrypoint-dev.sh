@@ -13,7 +13,7 @@ done
 
 until ./manage.py migrate --fake
 do
-    echo "Waiting for db to be ready..."
+    echo "Waiting for db to be migrate..."
     sleep 2
 done
 
