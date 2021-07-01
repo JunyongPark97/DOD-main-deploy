@@ -19,7 +19,8 @@ from django.urls import path, include
 
 from core.views import SendMMSAPIView
 from custom_manage.sites import superadmin_panel, staff_panel
-from dod import settings
+from custom_manage.views import AutoSendLeftMMSAPIView
+from django.conf import settings
 from respondent.views import RefererValidatorAPIView, home
 
 urlpatterns = [
@@ -27,7 +28,7 @@ urlpatterns = [
     path('superadmin/', superadmin_panel.urls),
     path('staff/', staff_panel.urls, name='staff'),
 
-    path('link/<slug:slug>/', RefererValidatorAPIView.as_view()),
+    path('<slug:slug>/', RefererValidatorAPIView.as_view()),
 
     path('accounts/v1/', include('accounts.urls')),
     path('api/v1/', include('projects.urls')),

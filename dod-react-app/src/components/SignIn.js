@@ -23,7 +23,6 @@ function SignIn(props) {
         return idReady && pwReady;
     }
     function loginClickHandler() {
-        console.log(readyToLogin(id,pw));
         if(readyToLogin(id, pw)){
             fetch(`${baseUrl}/accounts/v1/login/`,{
                 method:"POST",
@@ -41,6 +40,7 @@ function SignIn(props) {
                         sessionStorage.setItem('DODtoken', res.token);
                         sessionStorage.setItem('userName', res.name);
                         window.dataLayer.push({
+                            'event' : 'loggedIn',
                             'userid': `${res.id}`
                         });
                         loginFunction();

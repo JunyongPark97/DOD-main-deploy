@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 
 
 # Create your views here.
+from core.slack import staff_reward_didnt_upload_slack_message
 from core.tools import get_client_ip
 from projects.models import Project
 from respondent.models import DeviceMetaInfo
@@ -42,16 +43,16 @@ class RefererValidatorAPIView(APIView):
         """
 
         # base_url = 'https://d-o-d.io/'
-        base_url = 'http://172.30.1.26:3000/'
+        # base_url = 'http://172.30.1.26:3000/'
+        base_url = 'https://dod-beta.com/'
         # server_url = 'https://docs.gift/'
-        print(base_url)
         self.referer = request.META.get('HTTP_REFERER', "")
         referer = request.META.get('HTTP_REFERER', "")
 
         if not self._check_referer():
             # client forbidden page
             # TODO: client url
-            forbidden_url = base_url + 'invalid'
+            forbidden_url = base_url + 'forbidden'
             return HttpResponseRedirect(forbidden_url)
 
         project_hash_key = kwargs['slug']
@@ -59,6 +60,15 @@ class RefererValidatorAPIView(APIView):
 
         if not self.project or not self._validate_project():
             # project not started page
+            project_not_start_url = base_url + 'invalid'
+            return HttpResponseRedirect(project_not_start_url)
+
+        if self.project.products.filter(rewards__isnull=True).exists():
+            msg = '[기프티콘 업로드 안됨]\n검색 키: {}\n시작 일: {}\n활성화 여부: {}'\
+                .format(self.project.project_hash_key,
+                        self.project.start_at,
+                        self.project.is_active)
+            staff_reward_didnt_upload_slack_message(msg)
             project_not_start_url = base_url + 'invalid'
             return HttpResponseRedirect(project_not_start_url)
 
@@ -86,6 +96,8 @@ class RefererValidatorAPIView(APIView):
             return False  # 종료됨
         elif not self.project.status:
             return False  # 입금대기중
+        elif not self.project.is_active:
+            return False  # 프로젝트 삭제됨(환불시)
         elif self.project.start_at > now:
             return False  # 프로젝트 대기중
         else:
@@ -110,11 +122,9 @@ class ClientRefererProjectValidateCheckViewSet(viewsets.GenericViewSet):
         return : 100: pass, 400: project is not valid, 999: validator is not valid
         """
         data = request.data
-        print(data)
         serializer = self.get_serializer(data=data)
         if serializer.is_valid(raise_exception=True):
             data = serializer.validated_data
-            print(data)
             validator = self.get_queryset().filter(validator=data.get('validator'))
             if not validator.exists():
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -136,6 +146,8 @@ class ClientRefererProjectValidateCheckViewSet(viewsets.GenericViewSet):
             return False  # 종료됨
         elif not self.project.status:
             return False  # 입금대기중
+        elif not self.project.is_active:
+            return False  # 프로젝트 삭제됨(환불시)
         elif self.project.start_at > now:
             return False  # 프로젝트 대기중
         else:
@@ -144,9 +156,7 @@ class ClientRefererProjectValidateCheckViewSet(viewsets.GenericViewSet):
 
 def home(request, **kwargs):
     ip = get_client_ip(request)
-    print(ip)
     user_agent = request.META.get('HTTP_USER_AGENT', "")
-    print(user_agent)
     referer = request.META.get('HTTP_REFERER', "")
     d = request.META
     context = {'ip': ip, 'agent': user_agent, 'referer': referer, 'data':d}

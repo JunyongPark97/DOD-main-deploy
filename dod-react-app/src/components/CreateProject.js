@@ -74,9 +74,9 @@ function CreateProject(props) {
             {(pageNum === 0)?
                 <div className='createproject-container'>
                     <p className='createproject-text'>
-                        2가지만 설정하면<br/>프로젝트가 생성됩니다.
+                        2가지만 설정하면<br/>추첨 링크가 생성됩니다.
                     </p>
-                    <div className={dueDateOpen?'create-project-selectBox open':'create-project-selectBox'} onClick={onClickDueDate}>
+                    <div id='select-date-btn' className={dueDateOpen?'create-project-selectBox open':'create-project-selectBox'} onClick={onClickDueDate}>
                         <div className='create-project-card'>
                             <p className='create-project-card-text'>1. 설문 기간 설정</p>
                             <p className={!dueDateOpen?'create-project-dueDate':'create-project-dueDate hide'}><img className='create-project-icon' src={process.env.PUBLIC_URL + 'icon-calendar.png'}/>
@@ -86,7 +86,7 @@ function CreateProject(props) {
                         <div id='select-date-btn' className={dueDateOpen?'create-project-descriptionBox':'create-project-descriptionBox hide'}>
                             <p className='create-project-dueDate-description'>
                                 설문 시작일과 종료일을 설정해주세요.<br/>
-                                시작일 00:00부터 종료일 24:00까지 <br/>프로젝트가 활성화돼요.
+                                시작일 00:00부터 종료일 24:00까지 <br/>추첨이 활성화돼요.
                             </p>
                             <div className='create-project-box2'>
                                 <p id='select-start-date-btn' className='create-project-dueDate-inline' onClick={openStartModal}><img className='create-project-icon' src={process.env.PUBLIC_URL + 'icon-calendar.png'}/>{startDate.getMonth()+1}-{startDate.getDate()}</p>
@@ -96,7 +96,7 @@ function CreateProject(props) {
                             <CalenderModal isStart={true} closeModal={closeStartModal} isModalOpen={startDayModalOpen} value={startDate} onChange={setStartDate}/>
                             <CalenderModal isStart={false} closeModal={closeEndModal} isModalOpen={endDayModalOpen} value={endDate} onChange={setEndDate}/>
                             </div>
-                        <img className='create-project-arrow' src={dueDateOpen? process.env.PUBLIC_URL + 'arrow-up.png' : process.env.PUBLIC_URL + 'arrow-down.png'}/>
+                        <img className={dueDateOpen? 'create-project-arrow hide':'create-project-arrow'} src={process.env.PUBLIC_URL + 'arrow-down.png'}/>
                     </div>
                     <div id='select-gift-btn' className={giftOpen?'create-project-selectBox open':'create-project-selectBox'} onClick={onClickGift}>
                         <div className='create-project-card'>
@@ -113,7 +113,7 @@ function CreateProject(props) {
                                 productList.map((item, index) => <ProductCard key={index} item={item} index = {index} onChange={onChangeProductNum}/>)
                             }
                         </div>
-                        <img className='create-project-arrow' src={giftOpen? process.env.PUBLIC_URL + 'arrow-up.png' : process.env.PUBLIC_URL + 'arrow-down.png'}/>
+                        <img className={giftOpen? 'create-project-arrow hide':'create-project-arrow'} src={process.env.PUBLIC_URL + 'arrow-down.png'}/>
                     </div>
                     <div className='contour-16margin'/>
                     <div className={readyToPay?'create-project-totalprice-box':'create-project-totalprice-box hide'}>

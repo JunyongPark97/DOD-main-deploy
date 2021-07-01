@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from dod import settings
+from django.conf import settings
 
 
 class Project(models.Model):
@@ -21,3 +21,9 @@ class Project(models.Model):
 
     def __str__(self):
         return '[{}]님의 프로젝트{}'.format(self.owner.phone, self.name)
+
+
+class ProjectMonitoringLog(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="monitoring_logs")
+    draw_again = models.BooleanField(default=False, help_text='모니터링 이후 True, 매번 쿼리하지 않기 위해 사용합니다.')
+    dead_line_notice = models.BooleanField(default=False, help_text='프로젝트 마감 알림 이후 True, 매번 쿼리하지 않기 위해 사용합니다.')

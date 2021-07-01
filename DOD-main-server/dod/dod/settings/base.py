@@ -11,16 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 from dod.loader import load_credential
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 SETTING_DEV_DIC = load_credential("develop")
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SETTING_DEV_DIC['SECRET_KEY']
@@ -28,12 +22,20 @@ SECRET_KEY = SETTING_DEV_DIC['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.30.1.17', '127.0.0.1', '172.30.1.18', '3.36.156.224', 'docs.gift', '3.37.147.189', 'd-o-d.io']
+ALLOWED_HOSTS = ['13.209.225.239',
+                 '127.0.0.1',
+                 'dod-beta.com',
+                 'dod-link.com',
+                 '3.36.156.224',
+                 'docs.gift',
+                 '3.37.147.189',
+                 'd-o-d.io',
+                 '172.31.6.130',
+                 '172.30.1.26']
 
 INTERNAL_IPS = ('172.30.1.18')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.admin',
@@ -68,7 +70,7 @@ THIRD_APPS = [
     'storages',
     'debug_toolbar',
     'crispy_forms',
-    'django_crontab'
+    # 'django_crontab'
 ]
 
 INSTALLED_APPS += SECONDS_APPS + THIRD_APPS
@@ -166,17 +168,13 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',  # temp for web chats test
     ],
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.DodPagination',
     'PAGE_SIZE': 51
 }
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
 # AWS
 AWS_ACCESS_KEY_ID = SETTING_DEV_DIC['S3']['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SETTING_DEV_DIC['S3']['AWS_SECRET_ACCESS_KEY']
@@ -198,11 +196,9 @@ MEDIA_URL = "https://%s/%s/" % (AWS_S3_HOST, MEDIA_LOCATION)
 
 DEFAULT_FILE_STORAGE = 'dod.storage.CustomS3Boto3Storage'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_ROOT = "https://%s/statics/" % AWS_S3_CUSTOM_DOMAIN
 MEDIA_ROOT = "https://%s/media/" % AWS_S3_CUSTOM_DOMAIN
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -230,11 +226,11 @@ CKEDITOR_CONFIGS = {
 }
 ########## END CKEDITOR CONFIGURATION
 # CORS
-CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:8000',
-#     'http://127.0.0.1:8000',
-# )
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'https://dod-beta.com',
+    'http://3.36.156.224'
+)
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
