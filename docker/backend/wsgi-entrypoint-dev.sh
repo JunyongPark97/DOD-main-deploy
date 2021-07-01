@@ -5,7 +5,7 @@ do
     echo "Waiting for server volume..."
 done
 
-until ./manage.py makemigrations
+until ./manage.py makemigrations --setings=dod.settings.develop
 do
     echo "Waiting for db to be ready..."
     sleep 2
