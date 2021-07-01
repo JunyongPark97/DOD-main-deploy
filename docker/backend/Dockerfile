@@ -14,3 +14,4 @@ ADD ./docker /app/docker
 ADD ./DOD-main-server /app/backend
 
 RUN chmod +x ./docker/backend/wsgi-entrypoint.sh
+RUN chmod +x ./docker/backend/wsgi-entrypoint-dev.sh
