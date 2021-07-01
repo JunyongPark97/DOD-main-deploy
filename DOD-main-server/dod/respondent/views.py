@@ -43,8 +43,9 @@ class RefererValidatorAPIView(APIView):
         """
 
         # base_url = 'https://d-o-d.io/'
+        base_url = 'http://3.37.147.189:8000'
         # base_url = 'http://172.30.1.26:3000/'
-        base_url = 'https://dod-beta.com/'
+        # base_url = 'https://dod-beta.com/'
         # server_url = 'https://docs.gift/'
         self.referer = request.META.get('HTTP_REFERER', "")
         referer = request.META.get('HTTP_REFERER', "")
