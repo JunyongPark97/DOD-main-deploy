@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 
 import os
 
-os.environ.setdefault('SETTINGS_MODE', 'devel')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dod.settings.aws')
+# os.environ.setdefault('SETTINGS_MODE', 'devel')
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dod.settings.aws')
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
