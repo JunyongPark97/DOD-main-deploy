@@ -5,13 +5,13 @@ do
     echo "Waiting for server volume..."
 done
 
-until ./manage.py makemigrations --setings=dod.settings.develop
+until ./manage.py makemigrations --settings dod.settings.develop
 do
     echo "Waiting for db to be ready..."
     sleep 2
 done
 
-until ./manage.py migrate --fake
+until ./manage.py migrate --fake --settings dod.settings.develop
 do
     echo "Waiting for db to be migrate..."
     sleep 2

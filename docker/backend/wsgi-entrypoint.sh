@@ -5,21 +5,21 @@ do
     echo "Waiting for server volume..."
 done
 
-until ./manage.py makemigrations
+until ./manage.py makemigrations --settings dod.settings.production
 do
     echo "Waiting for db to be ready..."
     sleep 2
 done
 
-until ./manage.py migrate --fake
+until ./manage.py migrate --fake --settings dod.settings.production
 do
-    echo "Waiting for db to be ready..."
+    echo "Waiting for db to be migrate..."
     sleep 2
 done
 
 ./manage.py collectstatic --noinput
 
-gunicorn dod.wsgi --bind 0.0.0.0:8000 -e DJANGO_SETTINGS_MODULE=dod.settings.production --workers 4 --threads 4
+gunicorn dod.wsgi --bind 0.0.0.0:8000 --env DJANGO_SETTINGS_MODULE=dod.settings.production --workers 4 --threads 4
 
 #####################################################################################
 # Options to DEBUG Django server
