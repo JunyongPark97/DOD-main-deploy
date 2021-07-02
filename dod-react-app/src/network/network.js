@@ -1,6 +1,6 @@
 // const baseUrl = 'https://docs.gift'
-// const baseUrl = 'https://d-o-d.io'
-const baseUrl = 'http://3.37.147.189'
+const baseUrl = 'https://d-o-d.io'
+// const baseUrl = 'http://3.37.147.189'
 // const baseUrl = 'http://3.36.156.224:8000'
 // const baseUrl = 'https://dod-link.com'
 export const kakaoLink = 'http://pf.kakao.com/_nfxcTs/chat'

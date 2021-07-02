@@ -42,8 +42,8 @@ class RefererValidatorAPIView(APIView):
         redirect : client_ip/<confirm_page>/?val=~~&?p=~~/
         """
 
-        # base_url = 'https://d-o-d.io/'
-        base_url = 'http://3.37.147.189:8000'
+        base_url = 'https://d-o-d.io/'
+        # base_url = 'http://3.37.147.189:8000'
         # base_url = 'http://172.30.1.26:3000/'
         # base_url = 'https://dod-beta.com/'
         # server_url = 'https://docs.gift/'
