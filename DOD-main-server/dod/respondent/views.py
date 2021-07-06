@@ -42,14 +42,14 @@ class RefererValidatorAPIView(APIView):
         return : None,
         redirect : client_ip/<confirm_page>/?val=~~&?p=~~/
         """
-        # base_url = 'https://d-o-d.io/'
+        base_url = 'https://d-o-d.io/'
         # base_url = 'http://3.37.147.189:8000'/
         # base_url = 'http://172.30.1.26:3000/'
 
-        if settings.DEVEL or settings.STAG:
-            base_url = 'http://172.30.1.26:3000/'
-        else:
-            base_url = 'https://dod-beta.com/'
+        # if settings.DEVEL or settings.STAG:
+        #     base_url = 'http://172.30.1.26:3000/'
+        # else:
+        #     base_url = 'https://dod-beta.com/'
 
         self.referer = request.META.get('HTTP_REFERER', "")
 
