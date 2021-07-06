@@ -174,7 +174,7 @@ class ProjectLinkSerializer(serializers.ModelSerializer):
         if settings.DEVEL or settings.STAG:
             url = 'https://docs.gift/link/{}/'.format(hash_key)
         else:
-            url = 'https://d-o-d.io/link/{}/'.format(hash_key) # TODO : link api 수정
+            url = 'https://dod-link.com/{}/'.format(hash_key) # TODO : link api 수정
         return url
 
     def get_pc_url(self, obj):
