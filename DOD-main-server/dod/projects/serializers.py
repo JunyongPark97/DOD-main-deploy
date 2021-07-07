@@ -169,12 +169,12 @@ class ProjectLinkSerializer(serializers.ModelSerializer):
 
     def get_url(self, obj): # TODO : respondent validator view api
         hash_key = obj.project_hash_key
-        url = 'https://d-o-d.io/link/{}/'.format(hash_key)
-        # # url = 'http://3.37.147.189:8000/link/{}/'.format(hash_key)
-        # if settings.DEVEL or settings.STAG:
-        #     url = 'https://docs.gift/link/{}/'.format(hash_key)
-        # else:
-        #     url = 'https://dod-link.com/{}/'.format(hash_key) # TODO : link api 수정
+        # url = 'https://d-o-d.io/link/{}/'.format(hash_key)
+        # url = 'http://3.37.147.189:8000/link/{}/'.format(hash_key)
+        if settings.DEVEL or settings.STAG:
+            url = 'http://3.36.156.224:8010/link/{}/'.format(hash_key)  # 2021.07.07 [d-o-d.io 리뉴얼 ]추가 ####
+        else:
+            url = 'https://dod-link.com/{}/'.format(hash_key) # TODO : link api 수정
         return url
 
     def get_pc_url(self, obj):
