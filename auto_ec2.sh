@@ -17,6 +17,7 @@ sudo cp -r ~/dod-react-app/ ~/DOD-main-deploy/
 sudo rm -rf ~/DOD-main-deploy/docker/nginx/certbot
 
 # step 2 : build docker image with updated code
+cd ~/DOD-main-deploy/
 docker-compose -f docker-compose.yml build
 
 # step 3 : re-copy certbot info to docker/nginx/
