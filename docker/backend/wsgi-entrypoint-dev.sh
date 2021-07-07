@@ -17,7 +17,7 @@ do
     sleep 2
 done
 
-./manage.py collectstatic --noinput --settings dod.settings.develop
+#./manage.py collectstatic --noinput --settings dod.settings.develop
 
 gunicorn dod.wsgi --bind 0.0.0.0:8000 --env DJANGO_SETTINGS_MODULE=dod.settings.develop --workers 4 --threads 4
 
